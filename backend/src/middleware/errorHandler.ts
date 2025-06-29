@@ -1,7 +1,7 @@
 import CustomErrorHandler from '../services/customErrorHandler';
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 
-const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction): void => {
+const errorHandler = (err: Error, req: Request, res: Response): void => {
     let statusCode = 500;
     let data = {
         message: "An unexpected error occurred",
