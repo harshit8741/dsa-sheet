@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon --exec tsx src/index.ts",
     "start": "node src/index.ts",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts"
   },
   "keywords": [],
   "author": "",
