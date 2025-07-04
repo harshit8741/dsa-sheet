@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
-import routes from "./routes/routes.js";
-import { testConnection } from "./config/db.ts";
+import { testConnection } from "./config/db";
 import config from './config/index';
 
 const app = express();
@@ -13,7 +12,7 @@ const startServer = async () => {
   try {
     await testConnection();
     
-    app.use("/api", routes);
+    // app.use("/api", routes);
     
     app.listen(config.APP_PORT, () => {
       console.log(`Server running on port ${config.APP_PORT}`);
