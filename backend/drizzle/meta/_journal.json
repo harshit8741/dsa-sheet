@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1751634264073,
-      "tag": "0000_natural_guardsmen",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1751637364717,
-      "tag": "0001_large_genesis",
+      "when": 1751710554829,
+      "tag": "0000_orange_ben_parker",
       "breakpoints": true
     }
   ]
