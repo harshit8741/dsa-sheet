@@ -1,12 +1,14 @@
-import { registerSchema } from "../validators/index";
+import { loginSchema, registerSchema } from "../validators/index";
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import CustomErrorHandler from "../services/customErrorHandler";
 import authservice from "../services/authservice";
+import { validateBody } from "../utils/validator";
+
 const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const registerBody = registerSchema.safeParse(req.body);
+      const registerBody = validateBody(registerSchema, req.body);
       if (!registerBody.success) {
         return next(registerBody.error);
       }
@@ -34,6 +36,18 @@ const authController = {
       return next(error);
     }
   },
+
+  async login(res: Response, req: Request, next: NextFunction){
+    try {
+      const loginBody = validateBody(loginSchema, req.body);
+      if(!loginBody.success){
+        return next(loginBody.error);
+      }
+
+    } catch (error) {
+      return next(error);
+    }
+  }
 };
 
 export default authController;
