@@ -3,6 +3,7 @@ import cors from "cors";
 import { testConnection } from "./config/db";
 import config from './config/index';
 import routes from "./routes";
+import { connectRedis } from './config/redis';
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(express.json());
 const startServer = async () => {
   try {
     await testConnection();
-    
+    await connectRedis();
     app.use("/api", routes);
     
     app.listen(config.APP_PORT, () => {

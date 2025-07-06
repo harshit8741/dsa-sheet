@@ -1,4 +1,3 @@
-// db.ts
 import config from './index';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
