@@ -61,10 +61,16 @@ const authController = {
       const accessToken = jwt.registerAccessToken(payload);
       const refreshToken = jwt.registerRefreshToken(payload);
 
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false, // ❗️Set to false for localhost (non-HTTPS)
+        sameSite: "lax",
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+      });
       sendResponse(
         res,
         "User login successfully",
-        { accessToken, refreshToken },
+        { accessToken },
         "SUCCESS"
       );
     } catch (error) {
