@@ -19,6 +19,12 @@ const authService = {
     });
     return newUser[0];
   },
+  
+  async getUser(email: string) {
+    return await db.query.users.findFirst({
+      where: eq(users.email, email),
+    });
+  },
 };
 
 export default authService;

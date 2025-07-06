@@ -8,4 +8,5 @@ export default {
   REDIS_USERNAME: process.env.REDIS_USERNAME,
   REDIS_HOST: process.env.REDIS_HOST,
   REDIS_PORT: process.env.REDIS_PORT,
+  JWT_SECRET: process.env.JWT_SECRET
 };
