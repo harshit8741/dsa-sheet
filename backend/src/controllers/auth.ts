@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import CustomErrorHandler from "../services/customErrorHandler";
 import authservice from "../services/authservice";
 import { validateBody } from "../utils/validator";
+import authService from "../services/authservice";
 
 const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -13,8 +14,10 @@ const authController = {
         return next(registerBody.error);
       }
 
+      const {username, email, password} = registerBody.data;
+
       const exists = await authservice.checkUserAlreadyExists(
-        registerBody.data.email
+        email
       );
       if (exists) {
         return next(
@@ -22,10 +25,10 @@ const authController = {
         );
       }
 
-      const hashedPassword = await bcrypt.hash(registerBody.data.password, 10);
+      const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await authservice.createUser({
-        username: registerBody.data.username,
-        email: registerBody.data.email,
+        username: username,
+        email: email,
         password: hashedPassword,
       });
       res.status(201).json({
@@ -44,6 +47,19 @@ const authController = {
         return next(loginBody.error);
       }
 
+      const {email, password} = loginBody.data;
+      const exists = await authService.checkUserAlreadyExists(email);
+      if(!exists){
+        return next(CustomErrorHandler.notFound("Email is not registered"));
+      }
+
+      const user = await authService.getUser(email);
+      const match = user?.password && await bcrypt.compare(password, user.password);
+      if(!match){
+        return next(CustomErrorHandler.notAuthorized("Incorrect password"));
+      }
+
+      
     } catch (error) {
       return next(error);
     }
