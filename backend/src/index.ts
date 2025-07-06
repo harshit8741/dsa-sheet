@@ -4,11 +4,12 @@ import { testConnection } from "./config/db";
 import config from './config/index';
 import routes from "./routes";
 import { connectRedis } from './config/redis';
-
+import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 const startServer = async () => {
   try {

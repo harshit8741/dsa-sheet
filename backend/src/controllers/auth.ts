@@ -7,6 +7,7 @@ import { validateBody } from "../utils/validator";
 import authService from "../services/authservice";
 import jwt from "../services/jwt";
 import { sendResponse } from "../utils/response";
+import redisClient from "../config/redis";
 
 const authController = {
   async register(req: Request, res: Response, next: NextFunction) {
@@ -31,7 +32,7 @@ const authController = {
         email: email,
         password: hashedPassword,
       });
-      sendResponse(res, "User Signup successfully", newUser, "SUCCESS");
+      sendResponse(res, "User Signup successfully", newUser, "CREATED");
     } catch (error) {
       return next(error);
     }
@@ -61,11 +62,62 @@ const authController = {
       const accessToken = jwt.registerAccessToken(payload);
       const refreshToken = jwt.registerRefreshToken(payload);
 
+      await redisClient.setEx(
+        `refresh:${user.id}`,
+        10 * 24 * 60 * 60,
+        refreshToken
+      );
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: false, // ❗️Set to false for localhost (non-HTTPS)
+        sameSite: "lax",
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+      });
+      sendResponse(res, "User login successfully", { accessToken }, "SUCCESS");
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const refreshToken = req.cookies.refreshToken;
+      if (!refreshToken) {
+        return next(CustomErrorHandler.notAuthorized("Refresh token missing"));
+      }
+      const userData = jwt.verifyToken(refreshToken);
+
+      const storedToken = await redisClient.get(`refresh:${userData.userId}`);
+      if (!storedToken || storedToken !== refreshToken) {
+        return next(CustomErrorHandler.notAuthorized("Invalid refresh token"));
+      }
+
+      const payload = {
+        email: userData.email,
+        userId: userData.userId,
+        role: userData.role,
+      };
+      const newAccessToken = jwt.registerAccessToken(payload);
+      const newRefreshToken = jwt.registerRefreshToken(payload);
+
+      await redisClient.setEx(
+        `refresh:${userData.userId}`,
+        10 * 24 * 60 * 60,
+        refreshToken
+      );
+
+      res.cookie("refreshToken", newRefreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+      });
       sendResponse(
         res,
-        "User login successfully",
-        { accessToken, refreshToken },
-        "SUCCESS"
+        "token refreshed successfully",
+        { newAccessToken },
+        "CREATED"
       );
     } catch (error) {
       return next(error);
