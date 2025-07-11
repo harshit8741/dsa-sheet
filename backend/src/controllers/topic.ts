@@ -12,8 +12,12 @@ const topicController = {
         return next(topicBody.error);
       }
 
-      const { name } = topicBody.data;
+      const { name, categoryId } = topicBody.data;
       const topic = await topicService.createTopic({ name });
+      await topicService.mapTopicToCategory({
+        topicId: topic.id,
+        categoryId,
+      });
       sendResponse(res, "Topic created successfully", topic, "CREATED");
     } catch (error) {
       return next(error);

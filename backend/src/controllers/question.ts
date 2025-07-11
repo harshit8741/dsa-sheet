@@ -12,9 +12,13 @@ const questionController = {
         return next(questionBody.error);
       }
 
-      const { title, problemLink, difficulty } = questionBody.data;
-      const topic = await questionService.createQuestion({ title, problemLink, difficulty });
-      sendResponse(res, "Question created successfully", topic, "CREATED");
+      const { title, problemLink, difficulty, topicId } = questionBody.data;
+      const question = await questionService.createQuestion({ title, problemLink, difficulty });
+      await questionService.mapQuestionTopic({
+        questionId: question.id,
+        topicId,
+      });
+      sendResponse(res, "Question created successfully", question, "CREATED");
     } catch (error) {
       return next(error);
     }

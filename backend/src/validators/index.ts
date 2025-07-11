@@ -13,6 +13,7 @@ export const loginSchema = z.object({
 
 export const topicSchema = z.object({
   name: z.string(),
+  categoryId: z.string().uuid("Invalid category ID"),
 });
 
 export const questionSchema = z.object({
@@ -28,11 +29,12 @@ export const questionSchema = z.object({
     .optional()
     .or(z.literal("").transform(() => undefined)),
 
-  difficulty: z
-    .enum(["easy", "medium", "hard"], {
-      required_error: "Difficulty is required",
-      invalid_type_error: "Difficulty must be 'easy', 'medium' or 'hard'",
-    }),
+  difficulty: z.enum(["easy", "medium", "hard"], {
+    required_error: "Difficulty is required",
+    invalid_type_error: "Difficulty must be 'easy', 'medium' or 'hard'",
+  }),
+
+  topicId: z.string().uuid("Invalid topic ID"),
 });
 
 export const categorySchema = z.object({
