@@ -34,3 +34,7 @@ export const questionSchema = z.object({
       invalid_type_error: "Difficulty must be 'easy', 'medium' or 'hard'",
     }),
 });
+
+export const categorySchema = z.object({
+  name: z.string(),
+});
