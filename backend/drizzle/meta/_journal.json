@@ -15,6 +15,13 @@
       "when": 1751812192016,
       "tag": "0001_jittery_hannibal_king",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752254709515,
+      "tag": "0002_slow_senator_kelly",
+      "breakpoints": true
     }
   ]
 }
