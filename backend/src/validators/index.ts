@@ -40,3 +40,11 @@ export const questionSchema = z.object({
 export const categorySchema = z.object({
   name: z.string(),
 });
+
+export const userQuestionProgressSchema = z.object({
+  userId: z.string().uuid("Invalid user ID"),
+  questionId: z.string().uuid("Invalid question ID"),
+  categoryId: z.string().uuid("Invalid category ID"),
+  status: z.enum(["unsolved", "solved", "in-progress", "revise"]).optional(),
+  note: z.string().max(1000, "Note is too long").optional(),
+});
