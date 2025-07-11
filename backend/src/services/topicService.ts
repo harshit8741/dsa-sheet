@@ -1,4 +1,5 @@
 import { db } from "../config/db";
+import { eq } from "drizzle-orm";
 import { topics } from "../db/schema/topics";
 import { topicCategoryMap } from "../db/schema/topicCategoryMap";
 type Topic = typeof topics.$inferInsert;
@@ -22,7 +23,19 @@ const topicService = {
     await db.insert(topicCategoryMap).values(topicInfo);
     return;
   },
-  
+
+  async getQuestionsByTopic(categoryId: string) {
+    const result = await db
+      .select({
+        id: topics.id,
+        name: topics.name,
+      })
+      .from(topicCategoryMap)
+      .innerJoin(topics, eq(topicCategoryMap.topicId, topics.id))
+      .where(eq(topicCategoryMap.categoryId, categoryId));
+
+    return result;
+  },
 };
 
 export default topicService;
