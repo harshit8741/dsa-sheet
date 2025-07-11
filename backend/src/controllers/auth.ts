@@ -70,7 +70,7 @@ const authController = {
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false, // ❗️Set to false for localhost (non-HTTPS)
+        secure: false, //Set to false for localhost (non-HTTPS)
         sameSite: "lax",
         maxAge: 10 * 24 * 60 * 60 * 1000,
       });
